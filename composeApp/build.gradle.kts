@@ -94,6 +94,10 @@ android {
     targetSdk = libs.versions.android.targetSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
+    buildConfigField("String", "COIN_RANKING_API_KEY", "\"${System.getenv("COIN_BO_RANKING_API_KEY")}\"")
+  }
+  buildFeatures {
+    buildConfig = true
   }
   packaging {
     resources {
