@@ -1,13 +1,13 @@
 package com.multiplatform.coinbo.core.network
 
 import com.multiplatform.coinbo.core.domain.DataError
+import com.multiplatform.coinbo.core.domain.Result
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.ensureActive
 import kotlin.coroutines.coroutineContext
-import com.multiplatform.coinbo.core.domain.Result
 /**
  * These two methods, safeCall and responseToResult, are designed to handle
  * HTTP requests and responses in a safe and structured way using Ktor client in Kotlin.
@@ -24,13 +24,13 @@ import com.multiplatform.coinbo.core.domain.Result
  *   is still active and throw an exception if the coroutine has been cancelled.
  * **/
 suspend inline fun <reified T> safeCall(
-  execute: () -> HttpResponse
+  execute: () -> HttpResponse,
 ): Result<T, DataError.Remote> {
   val response = try {
     execute()
-  } catch(e: SocketTimeoutException) {
+  } catch (e: SocketTimeoutException) {
     return Result.Failure(DataError.Remote.REQUEST_TIMEOUT)
-  } catch(e: UnresolvedAddressException) {
+  } catch (e: UnresolvedAddressException) {
     return Result.Failure(DataError.Remote.NO_INTERNET)
   } catch (e: Exception) {
     coroutineContext.ensureActive()
@@ -41,13 +41,13 @@ suspend inline fun <reified T> safeCall(
 }
 
 suspend inline fun <reified T> responseToResult(
-  response: HttpResponse
+  response: HttpResponse,
 ): Result<T, DataError.Remote> {
-  return when(response.status.value) {
+  return when (response.status.value) {
     in 200..299 -> {
       try {
         Result.Success(response.body<T>())
-      } catch(e: Exception) {
+      } catch (e: Exception) {
         Result.Failure(DataError.Remote.SERIALIZATION)
       }
     }

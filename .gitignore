@@ -420,3 +420,5 @@ obj/
 
 # Ignore output-metadata.json file
 output-metadata.json
+#iOS Secrets
+iosApp/iosApp/ApiKeys.plist
