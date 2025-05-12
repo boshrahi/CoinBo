@@ -8,9 +8,9 @@ import com.multiplatform.coinbo.core.domain.Result
 
 interface CoinsRemoteDataSource {
 
-    suspend fun getListOfCoins(): Result<CoinsResponseDto, DataError.Remote>
+  suspend fun getListOfCoins(): Result<CoinsResponseDto, DataError.Remote>
 
-    suspend fun getPriceHistory(coinId: String): Result<CoinPriceHistoryResponseDto, DataError.Remote>
+  suspend fun getPriceHistory(coinId: String): Result<CoinPriceHistoryResponseDto, DataError.Remote>
 
-    suspend fun getCoinById(coinId: String): Result<CoinDetailsResponseDto, DataError.Remote>
+  suspend fun getCoinById(coinId: String): Result<CoinDetailsResponseDto, DataError.Remote>
 }

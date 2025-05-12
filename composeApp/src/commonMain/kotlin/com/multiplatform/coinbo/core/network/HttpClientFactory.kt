@@ -23,7 +23,7 @@ object HttpClientFactory {
         json(
           json = Json {
             ignoreUnknownKeys = true
-          }
+          },
         )
       }
       install(HttpTimeout) {

@@ -5,15 +5,15 @@ import com.multiplatform.coinbo.coins.data.remote.dto.CoinPriceHistoryResponseDt
 import com.multiplatform.coinbo.coins.data.remote.dto.CoinsResponseDto
 import com.multiplatform.coinbo.coins.domain.api.CoinsRemoteDataSource
 import com.multiplatform.coinbo.core.domain.DataError
+import com.multiplatform.coinbo.core.domain.Result
 import com.multiplatform.coinbo.core.network.safeCall
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
-import com.multiplatform.coinbo.core.domain.Result
 
 private const val BASE_URL = "https://api.coinranking.com/v2"
 
 class KtorCoinsRemoteDataSource(
-  private val httpClient: HttpClient
+  private val httpClient: HttpClient,
 ) : CoinsRemoteDataSource {
 
   override suspend fun getListOfCoins(): Result<CoinsResponseDto, DataError.Remote> {
