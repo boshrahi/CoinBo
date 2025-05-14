@@ -10,7 +10,13 @@ plugins {
 }
 spotless {
   kotlin {
-    target("**/*.kt", "**/*.kts")
+    target(
+      "**/*.kt",
+      "**/*.kts",
+      "iosMain/**/*.kt",
+      "commonMain/kotlin/**/*.kt",
+      "composeApp/src/**/*.kt",
+    )
     targetExclude("$buildDir/**/*.kt", "bin/**/*.kt", "buildSrc/**/*.kt")
     // version, editorConfigPath, editorConfigOverride and customRuleSets are all optional
     ktlint().setEditorConfigPath("$rootDir/.editorconfig") // sample unusual placement
