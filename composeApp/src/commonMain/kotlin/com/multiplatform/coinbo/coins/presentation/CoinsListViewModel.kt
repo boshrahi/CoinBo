@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import toUiText
 
 /**
  * viewModel class supports both android and ios (thank God!)
@@ -53,7 +54,7 @@ class CoinsListViewModel(
         _state.update {
           it.copy(
             coins = emptyList(),
-            error = null, // TODO convert to UiText
+            error = coinsRes.error.toUiText(),
           )
         }
       }
