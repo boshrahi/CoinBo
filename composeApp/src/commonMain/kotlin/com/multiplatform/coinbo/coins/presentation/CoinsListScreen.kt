@@ -33,6 +33,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coinbo.composeapp.generated.resources.Res
 import coinbo.composeapp.generated.resources.close
+import coinbo.composeapp.generated.resources.coin_chart_title
+import coinbo.composeapp.generated.resources.coin_list_title
 import com.multiplatform.coinbo.coins.presentation.component.PerformanceChart
 import com.multiplatform.coinbo.theme.LocalCoinBoColorsPalette
 import org.jetbrains.compose.resources.stringResource
@@ -71,6 +73,15 @@ fun CoinsListContent(
         },
       )
     }
+    if (state.error != null) {
+      Text(
+        modifier = Modifier
+          .padding(16.dp)
+          .align(Alignment.Center),
+        text = stringResource(state.error),
+        color = MaterialTheme.colorScheme.error,
+      )
+    }
     CoinsList(
       coins = state.coins,
       onCoinClick = onCoinClick,
@@ -96,7 +107,7 @@ fun CoinsList(
       item {
         Text(
           modifier = Modifier.padding(16.dp),
-          text = "Top Coins: 🔥?",
+          text = stringResource(Res.string.coin_list_title),
           color = MaterialTheme.colorScheme.onBackground,
           fontSize = MaterialTheme.typography.titleLarge.fontSize,
         )
@@ -184,7 +195,7 @@ fun CoinChartDialog(
     onDismissRequest = onDismiss,
     title = {
       Text(
-        text = "24h Price chart for ${uiChartState.coinName}",
+        text = stringResource(Res.string.coin_chart_title, uiChartState.coinName),
       )
     },
     text = {

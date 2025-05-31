@@ -8,4 +8,6 @@
     <string name="error_serialization">Couldn't parse data.</string>
     <string name="error_insufficient_balance">Insufficient funds!</string>
     <string name="close">Close</string>
+    <string name="coin_list_title">Top Coins: 🔥</string>
+    <string name="coin_chart_title">24h Price chart for %1$s</string>
 </resources>
