@@ -2,6 +2,7 @@ package com.multiplatform.coinbo.di
 
 import com.multiplatform.coinbo.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import com.multiplatform.coinbo.coins.domain.GetCoinDetailsUseCase
+import com.multiplatform.coinbo.coins.domain.GetCoinPriceHistoryUseCase
 import com.multiplatform.coinbo.coins.domain.GetCoinsListUseCase
 import com.multiplatform.coinbo.coins.domain.api.CoinsRemoteDataSource
 import com.multiplatform.coinbo.coins.presentation.CoinsListViewModel
@@ -34,6 +35,7 @@ fun initKoin(config: KoinAppDeclaration? = null) =
       ),
     )
   }
+
 expect val platformModule: Module
 val sharedModule = module {
   // core
@@ -44,5 +46,12 @@ val sharedModule = module {
   singleOf(::GetCoinsListUseCase)
   singleOf(::GetCoinDetailsUseCase)
 
-  viewModel { CoinsListViewModel(getCoinsListUseCase = get()) }
+  singleOf(::GetCoinPriceHistoryUseCase)
+
+  viewModel {
+    CoinsListViewModel(
+      getCoinsListUseCase = get(),
+      getCoinPriceHistoryUseCase = get(),
+    )
+  }
 }

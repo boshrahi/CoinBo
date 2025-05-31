@@ -2,6 +2,7 @@ package com.multiplatform.coinbo.coins.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.multiplatform.coinbo.coins.domain.GetCoinPriceHistoryUseCase
 import com.multiplatform.coinbo.coins.domain.GetCoinsListUseCase
 import com.multiplatform.coinbo.core.domain.Result
 import com.multiplatform.coinbo.core.util.formatFiat
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import toUiText
 
 /**
@@ -20,6 +22,7 @@ import toUiText
  * */
 class CoinsListViewModel(
   private val getCoinsListUseCase: GetCoinsListUseCase,
+  private val getCoinPriceHistoryUseCase: GetCoinPriceHistoryUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(CoinsState())
@@ -58,6 +61,47 @@ class CoinsListViewModel(
           )
         }
       }
+    }
+  }
+  fun getCoinPriceList(coinId: String) {
+    _state.update {
+      it.copy(
+        chartState = UiChartState(isLoading = true, sparkLine = emptyList()),
+      )
+    }
+    viewModelScope.launch {
+      when (val coinsRes = getCoinPriceHistoryUseCase.execute(coinId)) {
+        is Result.Success -> {
+          _state.update { currentState ->
+            currentState.copy(
+              chartState = UiChartState(
+                sparkLine = coinsRes.data.sortedBy { it.timestamp }.map { it.price },
+                isLoading = false,
+                coinName = currentState.coins.find { it.id == coinId }?.name ?: "",
+              ),
+            )
+          }
+        }
+        is Result.Failure -> {
+          _state.update { currentState ->
+            currentState.copy(
+              chartState = UiChartState(
+                sparkLine = emptyList(),
+                isLoading = false,
+                coinName = "",
+              ),
+            )
+          }
+        }
+      }
+    }
+  }
+
+  fun onDismissChart() {
+    _state.update {
+      it.copy(
+        chartState = null,
+      )
     }
   }
 }

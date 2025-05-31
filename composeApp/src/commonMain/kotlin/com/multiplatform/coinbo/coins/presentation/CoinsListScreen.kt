@@ -1,7 +1,8 @@
 package com.multiplatform.coinbo.coins.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +31,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import coinbo.composeapp.generated.resources.Res
+import coinbo.composeapp.generated.resources.close
+import com.multiplatform.coinbo.coins.presentation.component.PerformanceChart
 import com.multiplatform.coinbo.theme.LocalCoinBoColorsPalette
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -40,6 +48,8 @@ fun CoinsListScreen(
   CoinsListContent(
     state = state,
     onCoinClick = onCoinClick,
+    onDismiss = { viewModel.onDismissChart() },
+    onCoinLongClick = { coinId -> viewModel.getCoinPriceList(coinId) },
   )
 }
 
@@ -47,19 +57,34 @@ fun CoinsListScreen(
 fun CoinsListContent(
   state: CoinsState,
   onCoinClick: (String) -> Unit,
+  onCoinLongClick: (String) -> Unit,
+  onDismiss: () -> Unit,
 ) {
   Box(
     modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
   ) {
+    if (state.chartState != null) {
+      CoinChartDialog(
+        uiChartState = state.chartState,
+        onDismiss = {
+          onDismiss()
+        },
+      )
+    }
     CoinsList(
       coins = state.coins,
       onCoinClick = onCoinClick,
+      onCoinLongClick = onCoinLongClick,
     )
   }
 }
 
 @Composable
-fun CoinsList(coins: List<UiCoinListItem>, onCoinClick: (String) -> Unit) {
+fun CoinsList(
+  coins: List<UiCoinListItem>,
+  onCoinClick: (String) -> Unit,
+  onCoinLongClick: (String) -> Unit,
+) {
   Box(
     modifier = Modifier.background(MaterialTheme.colorScheme.background),
     contentAlignment = Alignment.Center,
@@ -80,18 +105,28 @@ fun CoinsList(coins: List<UiCoinListItem>, onCoinClick: (String) -> Unit) {
         CoinListItem(
           coin = coin,
           onClick = { onCoinClick(it) },
+          onCoinLongClick = { onCoinLongClick(it) },
         )
       }
     }
   }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CoinListItem(coin: UiCoinListItem, onClick: (String) -> Unit) {
+fun CoinListItem(
+  coin: UiCoinListItem,
+  onClick: (String) -> Unit,
+  onCoinLongClick: (String) -> Unit,
+) {
   Row(
-    modifier = Modifier.fillMaxWidth().padding(16.dp).clickable {
-      onClick(coin.id)
-    },
+    modifier = Modifier
+      .fillMaxWidth()
+      .combinedClickable(
+        onLongClick = { onCoinLongClick(coin.id) },
+        onClick = { onClick(coin.id) },
+      )
+      .padding(16.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     AsyncImage(
@@ -137,4 +172,53 @@ fun CoinListItem(coin: UiCoinListItem, onClick: (String) -> Unit) {
       )
     }
   }
+}
+
+@Composable
+fun CoinChartDialog(
+  uiChartState: UiChartState,
+  onDismiss: () -> Unit,
+) {
+  AlertDialog(
+    modifier = Modifier.fillMaxWidth(),
+    onDismissRequest = onDismiss,
+    title = {
+      Text(
+        text = "24h Price chart for ${uiChartState.coinName}",
+      )
+    },
+    text = {
+      if (uiChartState.isLoading) {
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(16.dp),
+          contentAlignment = Alignment.Center,
+        ) {
+          CircularProgressIndicator(modifier = Modifier.size(32.dp))
+        }
+      } else {
+        PerformanceChart(
+          modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(16.dp),
+          nodes = uiChartState.sparkLine,
+          profitColor = LocalCoinBoColorsPalette.current.profitGreen,
+          lossColor = LocalCoinBoColorsPalette.current.lossRed,
+        )
+      }
+    },
+    confirmButton = {},
+    dismissButton = {
+      Button(
+        onClick = onDismiss,
+      ) {
+        Text(
+          text = stringResource(Res.string.close),
+        )
+      }
+    },
+  )
 }
