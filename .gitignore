@@ -422,3 +422,6 @@ obj/
 output-metadata.json
 #iOS Secrets
 iosApp/iosApp/ApiKeys.plist
+
+# Room
+schemas/
