@@ -1,7 +1,12 @@
 package com.multiplatform.coinbo.di
 
+import androidx.room.RoomDatabase
+import com.multiplatform.coinbo.core.database.getPortfolioDatabaseBuilder
+import com.multiplatform.coinbo.core.database.portfolio.PortfolioDatabase
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.darwin.Darwin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual val platformModule = module {
@@ -9,4 +14,5 @@ actual val platformModule = module {
   // For example, you can provide iOS-specific implementations of interfaces
   // or any other dependencies that are specific to the iOS platform.
   single<HttpClientEngine> { Darwin.create() }
+  singleOf(::getPortfolioDatabaseBuilder).bind<RoomDatabase.Builder<PortfolioDatabase>>()
 }

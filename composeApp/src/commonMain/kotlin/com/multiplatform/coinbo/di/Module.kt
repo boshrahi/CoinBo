@@ -1,11 +1,14 @@
 package com.multiplatform.coinbo.di
 
+import androidx.room.RoomDatabase
 import com.multiplatform.coinbo.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import com.multiplatform.coinbo.coins.domain.GetCoinDetailsUseCase
 import com.multiplatform.coinbo.coins.domain.GetCoinPriceHistoryUseCase
 import com.multiplatform.coinbo.coins.domain.GetCoinsListUseCase
 import com.multiplatform.coinbo.coins.domain.api.CoinsRemoteDataSource
 import com.multiplatform.coinbo.coins.presentation.CoinsListViewModel
+import com.multiplatform.coinbo.core.database.portfolio.PortfolioDatabase
+import com.multiplatform.coinbo.core.database.portfolio.getPortfolioDatabase
 import com.multiplatform.coinbo.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
@@ -41,13 +44,15 @@ val sharedModule = module {
   // core
   single<HttpClient> { HttpClientFactory.create(get()) }
 
+  // portfolio
+  single {
+    getPortfolioDatabase(get<RoomDatabase.Builder<PortfolioDatabase>>())
+  }
   // coin list
   singleOf(::KtorCoinsRemoteDataSource).bind<CoinsRemoteDataSource>()
   singleOf(::GetCoinsListUseCase)
   singleOf(::GetCoinDetailsUseCase)
-
   singleOf(::GetCoinPriceHistoryUseCase)
-
   viewModel {
     CoinsListViewModel(
       getCoinsListUseCase = get(),
