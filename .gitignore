@@ -425,3 +425,4 @@ iosApp/iosApp/ApiKeys.plist
 
 # Room
 schemas/
+**/.kotlin
