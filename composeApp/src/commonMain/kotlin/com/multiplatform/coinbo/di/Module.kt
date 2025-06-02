@@ -10,6 +10,9 @@ import com.multiplatform.coinbo.coins.presentation.CoinsListViewModel
 import com.multiplatform.coinbo.core.database.portfolio.PortfolioDatabase
 import com.multiplatform.coinbo.core.database.portfolio.getPortfolioDatabase
 import com.multiplatform.coinbo.core.network.HttpClientFactory
+import com.multiplatform.coinbo.portfolio.data.PortfolioRepositoryImpl
+import com.multiplatform.coinbo.portfolio.domain.PortfolioRepository
+import com.multiplatform.coinbo.portfolio.presentation.PortfolioViewModel
 import io.ktor.client.HttpClient
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -48,6 +51,11 @@ val sharedModule = module {
   single {
     getPortfolioDatabase(get<RoomDatabase.Builder<PortfolioDatabase>>())
   }
+  singleOf(::PortfolioRepositoryImpl).bind<PortfolioRepository>()
+  single { get<PortfolioDatabase>().portfolioDao() }
+  single { get<PortfolioDatabase>().userBalanceDao() }
+  viewModel { PortfolioViewModel(get()) }
+
   // coin list
   singleOf(::KtorCoinsRemoteDataSource).bind<CoinsRemoteDataSource>()
   singleOf(::GetCoinsListUseCase)

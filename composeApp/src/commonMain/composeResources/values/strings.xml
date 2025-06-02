@@ -10,4 +10,10 @@
     <string name="close">Close</string>
     <string name="coin_list_title">Top Coins: 🔥</string>
     <string name="coin_chart_title">24h Price chart for %1$s</string>
+    <string name="total_value_title">Total Value:</string>
+    <string name="cash_balance_title">Cash Balance: </string>
+    <string name="buy_coin_title">Buy Coin</string>
+    <string name="owned_coin_title">💰Owned Coins </string>
+    <string name="no_coin_error">No coins in your portfolio yet.</string>
+    <string name="discover_coins_title">Discover coins</string>
 </resources>
