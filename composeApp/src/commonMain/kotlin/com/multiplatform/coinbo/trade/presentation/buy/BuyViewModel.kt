@@ -47,6 +47,14 @@ class BuyViewModel(
     initialValue = TradeState(isLoading = true),
   )
 
+  /**
+   * a channel in Kotlin is a coroutine based construct
+   * for asynchronous message passing.
+   * It allows us to send discrete events that can be buffered and processed sequentially.
+   * Unlike a stateflow, which always holds the latest value and emits the state changes.
+   * A channel is perfect for one off events where you might want to buffer multiple items
+   * before they are collected.
+   * */
   private val _events = Channel<BuyEvents>(capacity = Channel.BUFFERED)
   val events = _events.receiveAsFlow()
 

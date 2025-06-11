@@ -7,7 +7,6 @@ import platform.Foundation.NSHomeDirectory
 
 fun getPortfolioDatabaseBuilder(): RoomDatabase.Builder<PortfolioDatabase> {
   // iOS does not have a context like Android, so we use NSHomeDirectory to get the path
-  //
   val dbFile = NSHomeDirectory() + "/portfolio.db"
   return Room.databaseBuilder<PortfolioDatabase>(
     name = dbFile,
