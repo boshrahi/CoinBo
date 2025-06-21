@@ -1,6 +1,6 @@
 package com.multiplatform.coinbo.core.util
 
-import android.icu.text.DecimalFormat
+import java.text.DecimalFormat
 
 /**
  * inside of compose main we have access to java libs

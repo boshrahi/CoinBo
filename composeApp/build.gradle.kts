@@ -75,8 +75,8 @@ kotlin {
     commonTest.dependencies {
       implementation(libs.kotlinx.coroutines.test)
       implementation(libs.kotlin.test)
-      implementation(libs.test.turbine)
-      implementation(libs.test.assertk)
+      implementation(libs.test.turbine) // for flow testing
+      implementation(libs.test.assertk) // we cannot use junit is for testing on jdk or java @OptIn(ExperimentalComposeLibrary::class)
 
       @OptIn(ExperimentalComposeLibrary::class)
       implementation(compose.uiTest)
